@@ -56,6 +56,22 @@ Do NOT include specific file paths or code snippets. They may end up being outda
 
 Exception: if a prototype produced a snippet that encodes a decision more precisely than prose can (state machine, reducer, schema, type shape), inline it within the relevant decision and note briefly that it came from a prototype. Trim to the decision-rich parts, not a working demo, just the important bits.
 
+## 流程图
+
+Two Mermaid flowcharts, embedded inline so the spec is viewable without a follow-up request. Label nodes with the canonical terms from the domain glossary.
+
+- **预期流程图 (Expected flow)**: drawn now from the agreed design. Cover the main journey plus the branches / decision points resolved in the conversation.
+- **实际流程图 (Actual flow)**: a clearly-marked placeholder, filled in by `/implement` once the whole spec is built (see that skill).
+
+## API 变化小结
+
+Contract-facing diff a client developer reads before touching their models, as a plan-vs-actual pair:
+
+- **计划变更 (Planned)**: written now. One line per endpoint, `METHOD /path` followed by a one-sentence field delta, e.g. `GET /api/v3/archives` — 每个列表项新增可选字段 `is_self_created`；or `GET /api/v3/hepan/invitations` — 新增可选 query 参数 `status`，响应结构不变. For a brand-new or deleted endpoint, name it and what it does; do not enumerate its fields. Every endpoint the change touches appears, even when the delta is "response shape unchanged"; if no endpoint is touched, write "无 API 变化".
+- **实际变更 (Actual)**: a clearly-marked placeholder, filled in by `/implement` once the whole spec is built.
+
+Endpoint paths are contract, not file paths: they belong here despite the no-file-paths rule above.
+
 ## Testing Decisions
 
 A list of testing decisions that were made. Include:
