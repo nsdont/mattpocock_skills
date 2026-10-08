@@ -46,11 +46,15 @@ Present the proposed breakdown as a numbered list. For each ticket, show:
 - **Title**: short descriptive name
 - **Blocked by**: which other tickets (if any) must complete first
 - **What it delivers**: the end-to-end behaviour this ticket makes work
+- **Migration**: whether it adds a DB migration (two migration tickets must not be in flight at once)
+
+Then summarise the graph: the **layers** (tickets whose blockers all sit in earlier layers), the **width** of each layer, and the **critical path** length in layers. Tickets in the same layer can be built in parallel, so wall-clock time scales with layers, not ticket count: prefer cuts that widen layers (prefactor or contract-first ticket, then fan out) over long chains.
 
 Ask the user:
 
 - Does the granularity feel right? (too coarse / too fine)
 - Are the blocking edges correct: does each ticket only depend on tickets that genuinely gate it?
+- Could the critical path be shorter: is any edge there only out of habit, serialising tickets that could share a layer?
 - Should any tickets be merged or split further?
 
 Iterate until the user approves the breakdown.
