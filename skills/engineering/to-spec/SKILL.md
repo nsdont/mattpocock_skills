@@ -65,16 +65,20 @@ Two Mermaid flowcharts, embedded inline so the spec is viewable without a follow
 
 ## API 变化小结
 
-Contract-facing diff a client developer reads before touching their models, as a plan-vs-actual pair:
+A **hand-off note**: the user copies it verbatim to a client developer (iOS / web) who has never read the spec. It says **which endpoints changed, what changed, and the business rules the client must follow**; field-level detail (request / response fields, examples, error codes) lives in Swagger, so point there instead of repeating it. Both halves use the same shape:
 
-- **计划变更 (Planned)**: written now. One line per endpoint, `METHOD /path` followed by a one-sentence field delta, e.g. `GET /api/v3/archives` — 每个列表项新增可选字段 `is_self_created`；or `GET /api/v3/hepan/invitations` — 新增可选 query 参数 `status`，响应结构不变. For a brand-new or deleted endpoint, name it and what it does; do not enumerate its fields. Every endpoint the change touches appears, even when the delta is "response shape unchanged"; if no endpoint is touched, write "无 API 变化".
-- **实际变更 (Actual)**: a clearly-marked placeholder, filled in by `/implement` (or the orchestrator's closeout PR) once the whole spec is built. Unlike the planned list, it is a **hand-off document**: the user copies it verbatim to a client developer (iOS / web) who has never read the spec, so it must stand alone. Rules for filling it:
-  - Open with a short preamble: the shared response envelope and success code, auth / error conventions, time format, fixed values the client must pass (e.g. the only valid `campaign_key`), and one plain-language paragraph on any business rule the client needs to understand the numbers it shows.
-  - Group by **who has to act**: one section per consumer that must change code (e.g. 「iOS 需要接的」, numbered by the order the client meets them), then 「不需要 iOS 处理」 listing the rest in one line each (other clients' endpoints, admin endpoints, touched-but-unchanged endpoints).
-  - Per endpoint the client must integrate: when to call it and whether it needs login; a request example as JSON; the response `data` as a field table (field / type / meaning) with every enum value spelled out in plain words; one realistic JSON example; the display or retry rules the client must follow (what to show when, what not to compute itself, idempotency); error cases.
-  - Push notifications and other non-HTTP contracts count: give the full payload JSON as the device receives it, where custom keys sit, every language's copy, and what the client must add to handle it.
-  - Write in the client's words, not the spec's: no ticket / stage numbers, no "同计划", no internal state names or module names unless the client sees them on the wire. Every path, field, value and copy string is read from the code before it is written down.
-  - End with 「与计划的差异」: each divergence from 计划变更 in one line, or 「无」.
+- **计划变更 (Planned)**: written now, from the agreed design.
+- **实际变更 (Actual)**: a clearly-marked placeholder, filled in by `/implement` (or the orchestrator's closeout PR) once the whole spec is built, with every path, field, value and copy string read from the code.
+
+Shape of each half:
+
+- One line above both halves: who it is for, and that field detail is in Swagger (search by path).
+- **前置说明**: fixed values the client must pass (e.g. the only valid `campaign_key`), and a short plain-language statement of any business rule the client needs to understand what it shows, including client-side preconditions the server relies on (a header, a device id, an app-version).
+- **<client> 需要接的**: a table `接口 | 变化 | 要点`. 变化 is a few words (新增 / 请求加可选 `x` / 响应加可选 `y`); 要点 is when to call it and the rules Swagger cannot express (what to show when, what not to compute itself, idempotency, what must not break). Endpoints sharing one change share one row.
+- Non-HTTP contracts (push notifications, deep links) are not in Swagger, so in 实际变更 give the full payload JSON as the device receives it and what the client must add to handle it.
+- **不需要 <client> 处理**: one line each for other clients' endpoints, admin endpoints, and touched-but-unchanged endpoints. If no endpoint is touched at all, write "无 API 变化" instead of the sections.
+- Write in the client's words: no ticket / stage numbers, no "同计划", no internal state or module names unless the client sees them on the wire.
+- 实际变更 ends with 「与计划的差异」: each divergence from 计划变更 in one line, or 「无」.
 
 Endpoint paths are contract, not file paths: they belong here despite the no-file-paths rule above.
 
