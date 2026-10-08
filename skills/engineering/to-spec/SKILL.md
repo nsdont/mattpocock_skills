@@ -68,7 +68,13 @@ Two Mermaid flowcharts, embedded inline so the spec is viewable without a follow
 Contract-facing diff a client developer reads before touching their models, as a plan-vs-actual pair:
 
 - **计划变更 (Planned)**: written now. One line per endpoint, `METHOD /path` followed by a one-sentence field delta, e.g. `GET /api/v3/archives` — 每个列表项新增可选字段 `is_self_created`；or `GET /api/v3/hepan/invitations` — 新增可选 query 参数 `status`，响应结构不变. For a brand-new or deleted endpoint, name it and what it does; do not enumerate its fields. Every endpoint the change touches appears, even when the delta is "response shape unchanged"; if no endpoint is touched, write "无 API 变化".
-- **实际变更 (Actual)**: a clearly-marked placeholder, filled in by `/implement` once the whole spec is built.
+- **实际变更 (Actual)**: a clearly-marked placeholder, filled in by `/implement` (or the orchestrator's closeout PR) once the whole spec is built. Unlike the planned list, it is a **hand-off document**: the user copies it verbatim to a client developer (iOS / web) who has never read the spec, so it must stand alone. Rules for filling it:
+  - Open with a short preamble: the shared response envelope and success code, auth / error conventions, time format, fixed values the client must pass (e.g. the only valid `campaign_key`), and one plain-language paragraph on any business rule the client needs to understand the numbers it shows.
+  - Group by **who has to act**: one section per consumer that must change code (e.g. 「iOS 需要接的」, numbered by the order the client meets them), then 「不需要 iOS 处理」 listing the rest in one line each (other clients' endpoints, admin endpoints, touched-but-unchanged endpoints).
+  - Per endpoint the client must integrate: when to call it and whether it needs login; a request example as JSON; the response `data` as a field table (field / type / meaning) with every enum value spelled out in plain words; one realistic JSON example; the display or retry rules the client must follow (what to show when, what not to compute itself, idempotency); error cases.
+  - Push notifications and other non-HTTP contracts count: give the full payload JSON as the device receives it, where custom keys sit, every language's copy, and what the client must add to handle it.
+  - Write in the client's words, not the spec's: no ticket / stage numbers, no "同计划", no internal state names or module names unless the client sees them on the wire. Every path, field, value and copy string is read from the code before it is written down.
+  - End with 「与计划的差异」: each divergence from 计划变更 in one line, or 「无」.
 
 Endpoint paths are contract, not file paths: they belong here despite the no-file-paths rule above.
 
