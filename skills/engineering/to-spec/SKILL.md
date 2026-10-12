@@ -16,7 +16,7 @@ The issue tracker and triage label vocabulary should have been provided to you. 
 
 Check with the user that these seams match their expectations.
 
-3. Write the spec using the template below, then publish it to the project issue tracker. Apply the `ready-for-agent` triage label - no need for additional triage.
+3. Write the spec using the template below, then publish it to the project issue tracker. Apply the `ready-for-agent` triage label - no need for additional triage. If 计划变更 has any API change, also write the **数据结构草案** (see template) as its own file beside the spec, publish it where the issue tracker doc says API drafts go, and put its link in 计划变更.
 
 <spec-template>
 
@@ -67,7 +67,7 @@ Two Mermaid flowcharts, embedded inline so the spec is viewable without a follow
 
 A **hand-off note**: the user copies it verbatim to a client developer (iOS / web) who has never read the spec. It says **which endpoints changed, what changed, and the business rules the client must follow**; field-level detail (request / response fields, examples, error codes) lives in Swagger, so point there instead of repeating it. Both halves use the same shape:
 
-- **计划变更 (Planned)**: written now, from the agreed design.
+- **计划变更 (Planned)**: written now, from the agreed design. Swagger does not exist yet, so the field detail goes in the 数据结构草案 instead; 计划变更 links to it in its top line.
 - **实际变更 (Actual)**: a clearly-marked placeholder, filled in by `/implement` (or the orchestrator's closeout PR) once the whole spec is built, with every path, field, value and copy string read from the code.
 
 Shape of each half:
@@ -78,9 +78,22 @@ Shape of each half:
 - Non-HTTP contracts (push notifications, deep links) are not in Swagger, so in 实际变更 give the full payload JSON as the device receives it and what the client must add to handle it.
 - **不需要 <client> 处理**: one line each for other clients' endpoints, admin endpoints, and touched-but-unchanged endpoints. If no endpoint is touched at all, write "无 API 变化" instead of the sections.
 - Write in the client's words: no ticket / stage numbers, no "同计划", no internal state or module names unless the client sees them on the wire.
-- 实际变更 ends with 「与计划的差异」: each divergence from 计划变更 in one line, or 「无」.
+- 实际变更 ends with 「与计划的差异」: each divergence from 计划变更 and from the 数据结构草案 in one line, or 「无」. The client may already have coded against the draft, so list every field-level divergence: renamed, retyped, nullability changed, enum value added or removed.
 
 Endpoint paths are contract, not file paths: they belong here despite the no-file-paths rule above.
+
+### 数据结构草案 (separate file)
+
+The client checks its models against this before any server code exists, so it is a **draft contract**: the request / response shapes the client will decode. Skip it when there is no API change.
+
+- Top line: a draft for early alignment; once live, Swagger and 实际变更 are authoritative.
+- One section per endpoint row in 计划变更 that adds or changes a request or response: the path as heading, then a complete JSON example with realistic values (the response wrapped in its `code` / `msg` / `data` envelope; for a changed endpoint, only the changed part plus enough context to place it).
+- Under each JSON, a table of the fields the client must handle with care: nullable or absent (and when), enums (every value, plus what the client does with an unknown one), and fields that drive a client branch. Self-explanatory fields stay out of the table.
+- Push / deep-link payloads get the same treatment: full JSON as the device receives it.
+- A shape the conversation did not settle is marked 「待定」 with the open question, never filled with a guess.
+- Leave out error-code tables, rate limits, and implementation. An error code the client must branch on goes in the 要点 column of 计划变更.
+
+Done when every field the client decodes has its name, type and nullability, and every enum lists all of its values.
 
 ## Testing Decisions
 
