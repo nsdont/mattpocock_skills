@@ -89,11 +89,12 @@ The client checks its models against this before any server code exists, so it i
 - Top line: a draft for early alignment; once live, Swagger and 实际变更 are authoritative.
 - One section per endpoint row in 计划变更 that adds or changes a request or response: the path as heading, then a complete JSON example with realistic values (the response wrapped in its `code` / `msg` / `data` envelope; for a changed endpoint, only the changed part plus enough context to place it).
 - Under each JSON, a table of the fields the client must handle with care: nullable or absent (and when), enums (every value, plus what the client does with an unknown one), and fields that drive a client branch. Self-explanatory fields stay out of the table.
+- Then a **状态表**: one row per non-happy condition (无权益 / 资源不存在 / 处理中 / 失败 / 参数错 / 依赖不可用, plus any the design adds) → HTTP status, `code`, and the `data` shape the client sees. Read each status and `code` from the code path that produces it today (global exception handler / middleware, sibling endpoints); the plan-vs-actual history shows this is where specs drift.
 - Push / deep-link payloads get the same treatment: full JSON as the device receives it.
-- A shape the conversation did not settle is marked 「待定」 with the open question, never filled with a guess.
-- Leave out error-code tables, rate limits, and implementation. An error code the client must branch on goes in the 要点 column of 计划变更.
+- A shape or condition the conversation did not settle is marked 「待定」 with the open question, never filled with a guess.
+- Leave out rate limits and implementation.
 
-Done when every field the client decodes has its name, type and nullability, and every enum lists all of its values.
+Done when every field the client decodes has its name, type and nullability, every enum lists all of its values, and every non-happy condition has a 状态表 row (or 「待定」 where its basis cannot be found).
 
 ## Testing Decisions
 
