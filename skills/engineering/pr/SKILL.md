@@ -9,7 +9,7 @@ metadata:
     url: "https://github.com/humanlayer/skills/blob/main/plugins/show-me/skills/show-me/SKILL.md"
 ---
 
-Use this template for writing the PR body:
+If the repo has its own PR template (`.github/pull_request_template.md`, or one named in its steering files), that template wins: keep its sections and required lines verbatim, and use the guidance below only to fill them. Otherwise, use this template for writing the PR body:
 
 ```markdown
 ## Summary
