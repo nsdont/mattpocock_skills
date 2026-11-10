@@ -5,6 +5,11 @@ set -euo pipefail
 # owned and says modifications to it will not be approved, so this fork keeps
 # its extras in a separate file instead of editing it.
 #
+# Claude Code no longer loads skills through these links: since 2026-10-22
+# ~/.claude/skills is rendered from the dotfiles repo, so use
+# scripts/sync-to-dotfiles.sh for Claude Code. This script still serves
+# ~/.agents/skills and the Antigravity CLI (agy).
+#
 # On top of the upstream behaviour this script:
 #   - mirrors the same links into ~/.gemini/config/skills, the global skills
 #     dir used by the Antigravity CLI (agy)

@@ -12,7 +12,7 @@ Call the Skill tool with "tdd" where possible, at pre-agreed seams.
 
 Run typechecking regularly, single test files regularly, and the full test suite once at the end.
 
-Once done, call the Skill tool with "code-review" to review the work.
+Once done, call the Skill tool with "code-review" to review the work, unless the repo names its own pre-push review in its steering files (AGENTS.md, CLAUDE.md, rules), such as `/dual-review light`: run that one instead, not both.
 
 If the spec has no tickets, fill the spec's **实际流程图** and **实际变更** placeholders from the real code once the work is done. If it has tickets, do NOT fill them here: the orchestrator fills them once, in a closeout PR, after every ticket's `Stage:` is `landed` or `void` (tickets land in parallel, so no single ticket can tell it is the last). When you do fill them, write 实际变更 as the client hand-off note the to-spec template describes (which endpoints changed and the rules the client must follow, field detail left to Swagger, full payloads for push / deep links, a closing 「与计划的差异」 list), and call out every divergence from the expected flow, the planned API changes, and, field by field, the 数据结构草案, then mark the published draft expired as the issue tracker doc says; if a divergence changed a documented decision, reconcile `GLOSSARY.md` / the relevant ADR.
 
